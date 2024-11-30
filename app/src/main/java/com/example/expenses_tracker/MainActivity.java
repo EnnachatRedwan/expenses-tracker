@@ -15,19 +15,22 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.expenses_tracker.entities.Expense;
+import com.example.expenses_tracker.utils.ExpenseListViewAdapter;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    private final List<String> expenses = new ArrayList<>(
+    private final List<Expense> expenses = new ArrayList<>(
             Arrays.asList(
-                    "10Dh Lunch",
-                    "20Dh Public transportation",
-                    "5Dh Internet",
-                    "50Dh Fuel",
-                    "30Dh Groceries"
+                    new Expense(1L,"10Dh Lunch","was a delicious luncg"),
+                    new Expense(2L,"20Dh Public transportation",null),
+                    new Expense(3L,null,null),
+                    new Expense(4L,"50Dh Fuel","some descr here!"),
+                    new Expense(1L,"30Dh Groceries","some descr here too!")
             )
     );
 
@@ -43,15 +46,11 @@ public class MainActivity extends AppCompatActivity {
         });
 
         ListView listView = findViewById(R.id.expensesList);
-        ArrayAdapter<String> expensesAdapter = new ArrayAdapter<>(
-                this,
-                androidx.appcompat.R.layout.support_simple_spinner_dropdown_item,
-                expenses
-        );
-        listView.setAdapter(expensesAdapter);
+        ExpenseListViewAdapter expenseListViewAdapter = new ExpenseListViewAdapter(this,expenses);
+        listView.setAdapter(expenseListViewAdapter);
 
         listView.setOnItemClickListener((adapterView, view, i, l) -> {
-            Toast.makeText(this, expenses.get(i), Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, expenses.get(i).getName()!=null?expenses.get(i).getName():"unnamed", Toast.LENGTH_SHORT).show();
         });
 
         Button openExpenseFormButton = findViewById(R.id.openExpenseFormButton);
@@ -61,8 +60,8 @@ public class MainActivity extends AppCompatActivity {
                     if (result.getResultCode() != RESULT_OK) return;
                     if (result.getData() == null) return;
                     Intent data = result.getData();
-                    expenses.add(data.getStringExtra("name"));
-                    expensesAdapter.notifyDataSetChanged();
+//                    expenses.add(data.getStringExtra("name"));
+//                    expensesAdapter.notifyDataSetChanged();
                     Toast.makeText(this, "Saved " + data.getStringExtra("name"), Toast.LENGTH_SHORT).show();
                 }
         );
