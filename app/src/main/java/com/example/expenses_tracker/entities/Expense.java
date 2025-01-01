@@ -3,15 +3,15 @@ package com.example.expenses_tracker.entities;
 public class Expense {
     private Long id;
     private String name;
-    private String descr;
+    private Double amount;
 
     public Expense() {
     }
 
-    public Expense(Long id, String name, String descr) {
+    public Expense(Long id, String name, Double amount) {
         this.id = id;
         this.name = name;
-        this.descr = descr;
+        this.amount = amount;
     }
 
     public Long getId() {
@@ -26,11 +26,11 @@ public class Expense {
         this.name = name;
     }
 
-    public String getDescr() {
-        return descr;
+    public Double getAmount() {
+        return amount;
     }
 
-    public void setDescr(String descr) {
-        this.descr = descr;
+    public void setAmount(Double amount) {
+        this.amount = amount;
     }
 }

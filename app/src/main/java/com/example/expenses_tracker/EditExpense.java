@@ -11,34 +11,38 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-public class ExpenceForm extends AppCompatActivity {
+public class EditExpense extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_expence_form);
+        setContentView(R.layout.activity_edit_expense);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
 
-        EditText expenseNameEditText = findViewById(R.id.newExpenseName);
-        EditText expenseAmountEditText = findViewById(R.id.newExpenseAmount);
+        EditText expenseNameEditText = findViewById(R.id.editExpenseName);
+        EditText expenseAmountEditText = findViewById(R.id.editExpenseAmount);
 
-        Button addExpenseButton = findViewById(R.id.addExpenseButton);
-        addExpenseButton.setOnClickListener(view -> {
+        expenseNameEditText.setText(getIntent().getStringExtra("name"));
+        expenseAmountEditText.setText(getIntent().getStringExtra("amount"));
+
+        Button editExpenseButton = findViewById(R.id.editExpenseButton);
+        editExpenseButton.setOnClickListener(view -> {
             if (expenseNameEditText.getText().toString().isEmpty() || expenseAmountEditText.getText().toString().isEmpty()) return;
             Intent resultIntent = new Intent();
+            resultIntent.putExtra("id", getIntent().getStringExtra("id"));
             resultIntent.putExtra("name", expenseNameEditText.getText().toString());
             resultIntent.putExtra("amount", expenseAmountEditText.getText().toString());
             setResult(RESULT_OK, resultIntent);
             finish();
         });
 
-        Button cancelAddingExpenseButton = findViewById(R.id.cancelAddingExpenseButton);
-        cancelAddingExpenseButton.setOnClickListener(view -> {
+        Button cancelEditingExpenseButton = findViewById(R.id.cancelEditingExpenseButton);
+        cancelEditingExpenseButton.setOnClickListener(view -> {
             finish();
         });
     }

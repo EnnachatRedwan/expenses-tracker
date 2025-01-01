@@ -7,10 +7,36 @@
     android:orientation="vertical"
     tools:context=".MainActivity">
 
+    <androidx.cardview.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        card_view:cardCornerRadius="10dp"
+        card_view:cardElevation="10dp"
+        card_view:cardUseCompatPadding="true"
+        card_view:contentPadding="20dp"
+        card_view:cardBackgroundColor="@color/secondary">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/totalExpenses"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/_0_dh"
+                android:textColor="@color/on_secondary"
+                android:textSize="25sp" />
+        </LinearLayout>
+
+
+    </androidx.cardview.widget.CardView>
+
     <ListView
+        android:id="@+id/expensesList"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:id="@+id/expensesList"
         android:layout_weight="1" />
 
     <LinearLayout
@@ -22,9 +48,9 @@
         android:padding="5dp">
 
         <Button
+            android:id="@+id/openExpenseFormButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/openExpenseFormButton"
             android:backgroundTint="@color/on_secondary"
             android:text="@string/add_expense"
             android:textColor="@color/secondary"

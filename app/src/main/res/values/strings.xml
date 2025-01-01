@@ -8,4 +8,12 @@
     <string name="cancel">Cancel</string>
     <string name="expense_tem_name">Name:</string>
     <string name="expense_item_description">Description:</string>
+    <string name="amount">Amount:</string>
+    <string name="expense_amount">Expense amount</string>
+    <string name="total_expenses">Total expenses:</string>
+    <string name="currency">DH</string>
+    <string name="_0_dh">0 DH</string>
+    <string name="delete">X</string>
+    <string name="edit_expense">Edit expense</string>
+    <string name="edit">Edit</string>
 </resources>
