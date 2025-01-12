@@ -19,8 +19,6 @@ import com.example.expenses_tracker.entities.Expense;
 import com.example.expenses_tracker.repositories.ExpenseRepository;
 import com.example.expenses_tracker.utils.ExpenseListViewAdapter;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -54,58 +52,75 @@ public class MainActivity extends AppCompatActivity {
         expenses = expenseRepository.getAllExpenses();
 
         TextView totalTextView = findViewById(R.id.totalExpenses);
+        ListView listView = findViewById(R.id.expensesList);
+        Button openExpenseFormButton = findViewById(R.id.openExpenseFormButton);
+
         calculateTotal(totalTextView);
+
+        ExpenseListViewAdapter expenseListViewAdapter = new ExpenseListViewAdapter(this, expenses, expenseRepository);
 
         ActivityResultLauncher<Intent> editLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
-                    if (result.getResultCode() != RESULT_OK) return;
-                    if (result.getData() == null) return;
+                    if (result.getResultCode() != RESULT_OK || result.getData() == null) return;
+
                     Intent data = result.getData();
-                    Expense newExpense = new Expense(data.getLongExtra("id", 0),data.getStringExtra("name"),Double.valueOf(data.getStringExtra("amount")));
+                    long id = data.getLongExtra("id", 0);
+                    String name = data.getStringExtra("name");
+                    double amount = Double.parseDouble(data.getStringExtra("amount"));
+
+                    Expense newExpense = new Expense(id, name, amount);
                     expenseRepository.updateExpense(newExpense);
-                    Expense currentExpense = expenses.stream().filter(expense -> expense.getId() == newExpense.getId()).findFirst().orElse(null);
+
+                    Expense currentExpense = expenses.stream()
+                            .filter(expense -> expense.getId() == id)
+                            .findFirst()
+                            .orElse(null);
+
                     if (currentExpense != null) {
-                        currentExpense.setName(newExpense.getName());
-                        currentExpense.setAmount(newExpense.getAmount());
+                        currentExpense.setName(name);
+                        currentExpense.setAmount(amount);
                     }
-//                    expenseListViewAdapter.notifyDataSetChanged();
+
+                    expenseListViewAdapter.notifyDataSetChanged();
                     calculateTotal(totalTextView);
-                    Toast.makeText(this, "Edited " + data.getStringExtra("name"), Toast.LENGTH_SHORT).show();
+
+                    Toast.makeText(this, "Edited " + name, Toast.LENGTH_SHORT).show();
                 }
         );
 
-        ListView listView = findViewById(R.id.expensesList);
-        ExpenseListViewAdapter expenseListViewAdapter = new ExpenseListViewAdapter(this, expenses, expenseRepository,editLauncher);
+        expenseListViewAdapter.setEditExpenseLauncher(editLauncher);
+
         listView.setDivider(null);
         listView.setAdapter(expenseListViewAdapter);
 
-        listView.setOnItemClickListener((adapterView, view, i, l) -> {
-            Toast.makeText(this, expenses.get(i).getName() != null ? expenses.get(i).getName() : "unnamed", Toast.LENGTH_SHORT).show();
-        });
 
-        Button openExpenseFormButton = findViewById(R.id.openExpenseFormButton);
-        ActivityResultLauncher<Intent> launcher = registerForActivityResult(
+        ActivityResultLauncher<Intent> createLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
-                    if (result.getResultCode() != RESULT_OK) return;
-                    if (result.getData() == null) return;
+                    if (result.getResultCode() != RESULT_OK || result.getData() == null) return;
+
                     Intent data = result.getData();
+                    String name = data.getStringExtra("name");
+                    double amount = Double.parseDouble(data.getStringExtra("amount"));
+
                     Expense newExpense = new Expense();
-                    newExpense.setName(data.getStringExtra("name"));
-                    newExpense.setAmount(Double.valueOf(data.getStringExtra("amount")));
-                    expenseRepository.addExpense(newExpense);
-                    expenses.add(newExpense);
+                    newExpense.setName(name);
+                    newExpense.setAmount(amount);
+                    Expense savedExpense = expenseRepository.addExpense(newExpense);
+
+                    expenses.add(savedExpense);
                     expenseListViewAdapter.notifyDataSetChanged();
                     calculateTotal(totalTextView);
-                    Toast.makeText(this, "Saved " + data.getStringExtra("name"), Toast.LENGTH_SHORT).show();
+
+                    Toast.makeText(this, "Saved " + name, Toast.LENGTH_SHORT).show();
                 }
         );
 
         openExpenseFormButton.setOnClickListener(view -> {
-            Intent i = new Intent(this, ExpenceForm.class);
-            launcher.launch(i);
+            Intent intent = new Intent(this, ExpenceForm.class);
+            createLauncher.launch(intent);
         });
-
     }
+
 }

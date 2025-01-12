@@ -24,12 +24,15 @@ public class ExpenseListViewAdapter extends BaseAdapter {
     private final Context context;
     private final ExpenseRepository expenseRepository;
 
-    private final ActivityResultLauncher<Intent> editExpenseLauncher;
+    private ActivityResultLauncher<Intent> editExpenseLauncher;
 
-    public ExpenseListViewAdapter(Context context, List<Expense> expenses, ExpenseRepository expenseRepository, ActivityResultLauncher<Intent> editExpenseLauncher) {
+    public ExpenseListViewAdapter(Context context, List<Expense> expenses, ExpenseRepository expenseRepository) {
         this.expenses = expenses;
         this.context = context;
         this.expenseRepository = expenseRepository;
+    }
+
+    public void setEditExpenseLauncher(ActivityResultLauncher<Intent> editExpenseLauncher) {
         this.editExpenseLauncher = editExpenseLauncher;
     }
 
@@ -56,6 +59,7 @@ public class ExpenseListViewAdapter extends BaseAdapter {
     }
 
     private void updateExpense(Expense expense) {
+        if (editExpenseLauncher == null) return;
         Intent i = new Intent(context, EditExpense.class);
         i.putExtra("id", expense.getId());
         i.putExtra("name", expense.getName());

@@ -24,11 +24,12 @@ public class ExpenseRepository {
         dbHelper.close();
     }
 
-    public long addExpense(Expense expense) {
+    public Expense addExpense(Expense expense) {
         ContentValues values = new ContentValues();
         values.put(DatabaseHelper.COLUMN_NAME, expense.getName());
         values.put(DatabaseHelper.COLUMN_AMOUNT, expense.getAmount());
-        return database.insert(DatabaseHelper.TABLE_EXPENSES, null, values);
+        long expenseId = database.insert(DatabaseHelper.TABLE_EXPENSES, null, values);
+        return new Expense(expenseId, expense.getName(), expense.getAmount());
     }
 
     public void deleteExpense(Expense expense) {

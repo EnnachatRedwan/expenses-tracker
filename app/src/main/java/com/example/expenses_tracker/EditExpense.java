@@ -34,7 +34,7 @@ public class EditExpense extends AppCompatActivity {
         editExpenseButton.setOnClickListener(view -> {
             if (expenseNameEditText.getText().toString().isEmpty() || expenseAmountEditText.getText().toString().isEmpty()) return;
             Intent resultIntent = new Intent();
-            resultIntent.putExtra("id", getIntent().getStringExtra("id"));
+            resultIntent.putExtra("id", getIntent().getLongExtra("id", 0));
             resultIntent.putExtra("name", expenseNameEditText.getText().toString());
             resultIntent.putExtra("amount", expenseAmountEditText.getText().toString());
             setResult(RESULT_OK, resultIntent);
